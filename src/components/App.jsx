@@ -1,57 +1,78 @@
+import { Component } from 'react';
 import { Searchbar } from './Searchbar';
 import { ImageGallery } from './ImageGallery';
 import { ImageGalleryItem } from './ImageGalleryItem';
 import { Loader } from './Loader';
 import { Button } from './Button';
 import { Modal } from './Modal';
-import axios from 'axios';
-import { Component } from 'react';
+import { getImages } from 'service/imageAPI';
 
 export class App extends Component {
   state = {
     query: '',
-    pictures: '',
-  };
-
-  parameters = {
-    key: '36220225-498e2aaa7af1c41719481b4e5',
-    query: null,
-    image_type: 'photo',
-    orientation: 'vertical',
-    per_page: 40,
     page: 1,
+    pictures: [],
+    showBtn: false,
+    isEmpty: false,
+    error: '',
+    isLoading: false,
+    imageURL: '',
   };
 
-  handleSubmit = (_, searchText) => {
-    if (!this.state.search.trim()) {
-      return alert('ну напишіть щось, альо');
-    }
-    this.setState({ query: searchText });
-    this.parameters.query = searchText;
-  };
-
-  // handleChange = event => {
-  //   this.setState({ query: event.target.value });
-  //   this.parameters.query = event.target.value;
-  // };
-
-  async componentDidUpdate() {
-    const responce = await axios.get('https://pixabay.com/api/', {
-      params: [{ ...this.parameters, ...this.state }],
+  handleSubmit = query => {
+    this.setState({
+      query,
+      page: 1,
+      pictures: [],
+      showBtn: false,
+      isEmpty: false,
+      error: '',
+      isLoading: false,
+      imageURL: '',
     });
-    this.setState({ pictures: responce.data.hits });
-    this.parameters.query = this.state.query;
+  };
+
+  handleClick = () => {
+    this.setState(prev => ({
+      page: prev.page + 1,
+    }));
+  };
+
+  async componentDidUpdate(_, prevState) {
+    const { query, page } = this.state;
+    if (prevState.query !== query || prevState.page !== page) {
+      this.setState({ isLoading: true });
+      try {
+        const { hits, totalHits } = await getImages(query, page);
+        this.setState(prev => ({
+          pictures: [...prev.pictures, ...hits],
+          showBtn: page < Math.ceil(totalHits / 15),
+        }));
+      } catch (error) {
+        this.setState({ error: error.message });
+      } finally {
+        this.setState({ isLoading: false });
+      }
+    }
   }
 
+  onModal = imageURL => {
+    this.setState({ imageURL });
+  };
+
   render() {
+    const { pictures, showBtn, isLoading, imageURL } = this.state;
     return (
-      <div>
-        <Searchbar onSubmit={this.handleSubmit} onChange={this.handleChange} />
-        <ImageGallery />
-        <ImageGalleryItem />
-        <Loader />
-        <Button />
-        <Modal />
+      <div className="app">
+        <Searchbar submit={this.handleSubmit} />
+        {Boolean(pictures.length) && (
+          <ImageGallery>
+            <ImageGalleryItem pictures={pictures} onClick={this.onModal} />
+          </ImageGallery>
+        )}
+        {showBtn && <Button onClick={this.handleClick} />}
+        {isLoading && <Loader />}
+        {imageURL && <Modal url={imageURL} offModal={this.onModal} />}
       </div>
     );
   }

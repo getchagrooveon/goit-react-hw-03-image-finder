@@ -1,12 +1,33 @@
-import PropTypes from 'prop-types';
+import { Component } from 'react';
 
-export const Modal = ({}) => {
-  return <></>;
-};
+export class Modal extends Component {
+  componentDidMount() {
+    document.addEventListener('keydown', this.closeByEsc);
+  }
 
-Modal.propTypes = {
-  //   username: PropTypes.string,
-  //   location: PropTypes.string,
-  //   avatar: PropTypes.string,
-  //   stats: PropTypes.object,
-};
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.closeByEsc);
+  }
+
+  closeByEsc = event => {
+    if (event.key === 'Escape') {
+      this.props.offModal('');
+    }
+  };
+
+  closeBackdrop = event => {
+    if (event.target === event.currentTarget) {
+      this.props.offModal('');
+    }
+  };
+
+  render() {
+    return (
+      <div className="overlay" onClick={this.closeBackdrop}>
+        <div className="modal">
+          <img src={this.props.url} alt={this.props.tag} />
+        </div>
+      </div>
+    );
+  }
+}

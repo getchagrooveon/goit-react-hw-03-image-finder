@@ -1,24 +1,10 @@
-import PropTypes from 'prop-types';
-
-export const Button = ({}) => {
+export const Button = ({ onClick }) => {
   return (
-    <>
-      <div id="loaddiv" className="navbar navbar-light bg-light invisible">
-        <button
-          type="button"
-          id="load"
-          className="btn btn-outline-success my-2 my-sm-0"
-        >
-          Load more images
-        </button>
-      </div>
-    </>
+    <button
+      className="btn btn-outline-success my-2 my-sm-0 button"
+      onClick={onClick}
+    >
+      Load more ...
+    </button>
   );
-};
-
-Button.propTypes = {
-  //   username: PropTypes.string,
-  //   location: PropTypes.string,
-  //   avatar: PropTypes.string,
-  //   stats: PropTypes.object,
 };

@@ -1,30 +1,29 @@
-import PropTypes from 'prop-types';
-
-export const Searchbar = ({ startSearch, searchText, onSubmit, onChange }) => {
-  startSearch = event => {
+export const Searchbar = ({ submit }) => {
+  const handleSubmit = event => {
     event.preventDefault();
-    this.handleSubmit(searchText);
+    const { value } = event.target.elements.query;
+    submit(value);
   };
+
   return (
-    <>
-      <form className="navbar navbar-light bg-light sticky form-inline">
+    <header className="navbar navbar-light bg-light searchbar">
+      <form className="form inline-block searchForm" onSubmit={handleSubmit}>
+        <button
+          type="submit"
+          className="btn btn-outline-success my-2 my-sm-0 searchForm-button"
+        >
+          Search
+        </button>
+
         <input
-          name="search"
-          className="form-control mr-sm-2"
-          placeholder="Search"
-          aria-label="Search"
-          onSubmit={onSubmit}
-          onChange={onChange}
+          name="query"
+          className="form-control"
           type="text"
+          autoComplete="off"
+          autoFocus
+          placeholder="Search images and photos"
         />
       </form>
-    </>
+    </header>
   );
-};
-
-Searchbar.propTypes = {
-  //   username: PropTypes.string,
-  //   location: PropTypes.string,
-  //   avatar: PropTypes.string,
-  //   stats: PropTypes.object,
 };
