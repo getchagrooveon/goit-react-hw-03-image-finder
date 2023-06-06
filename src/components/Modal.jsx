@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import propTypes from 'prop-types';
 
 export class Modal extends Component {
   componentDidMount() {
@@ -24,10 +25,15 @@ export class Modal extends Component {
   render() {
     return (
       <div className="overlay" onClick={this.closeBackdrop}>
-        <div className="modal">
-          <img src={this.props.url} alt={this.props.tag} />
+        <div className="modal-img">
+          <img src={this.props.url} alt={this.props.tag} width="500" />
         </div>
       </div>
     );
   }
 }
+
+Modal.propTypes = {
+  url: propTypes.string,
+  tag: propTypes.string,
+};

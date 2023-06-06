@@ -19,7 +19,7 @@ export class App extends Component {
     imageURL: '',
   };
 
-  handleSubmit = query => {
+  changeState = query => {
     this.setState({
       query,
       page: 1,
@@ -64,7 +64,7 @@ export class App extends Component {
     const { pictures, showBtn, isLoading, imageURL } = this.state;
     return (
       <div className="app">
-        <Searchbar submit={this.handleSubmit} />
+        <Searchbar submit={this.changeState} />
         {Boolean(pictures.length) && (
           <ImageGallery>
             <ImageGalleryItem pictures={pictures} onClick={this.onModal} />
