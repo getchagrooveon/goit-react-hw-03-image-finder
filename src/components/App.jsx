@@ -9,7 +9,6 @@ import { getImages } from 'service/imageAPI';
 
 export class App extends Component {
   state = {
-    query: '',
     page: 1,
     pictures: [],
     showBtn: false,
